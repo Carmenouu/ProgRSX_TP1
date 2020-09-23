@@ -45,6 +45,7 @@ public class EchoServer  {
   	}
 	try {
 		listenSocket = new ServerSocket(Integer.parseInt(args[0])); //port
+		System.out.println("Server started"); 
 		while (true) {
 			Socket clientSocket = listenSocket.accept();
 			System.out.println("connexion from:" + clientSocket.getInetAddress());
