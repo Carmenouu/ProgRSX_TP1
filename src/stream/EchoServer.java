@@ -19,8 +19,7 @@ public class EchoServer  {
 	static void doService(Socket clientSocket) {
     	  try {
     		BufferedReader socIn = null;
-    		socIn = new BufferedReader(
-    			new InputStreamReader(clientSocket.getInputStream()));    
+    		socIn = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));    
     		PrintStream socOut = new PrintStream(clientSocket.getOutputStream());
     		while (true) {
     		  String line = socIn.readLine();

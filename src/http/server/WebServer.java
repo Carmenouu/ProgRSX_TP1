@@ -1,12 +1,15 @@
 ///A Simple Web Server (WebServer.java)
 
-package multithread.server;
+package http.server;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.sql.Date;
 
 /**
  * Example program from Chapter 1 Programming Spiders, Bots and Aggregators in
@@ -30,9 +33,9 @@ public class WebServer {
     System.out.println("(press ctrl-c to exit)");
     try {
       // create the main server socket
-      s = new ServerSocket(3000);
+      s = new ServerSocket(80);
     } catch (Exception e) {
-      System.out.println("Error: " + e);
+      System.err.println("Error: " + e);
       return;
     }
 
@@ -42,32 +45,28 @@ public class WebServer {
         // wait for a connection
         Socket remote = s.accept();
         // remote is now the connected socket
-        System.out.println("Connection, sending data.");
-        BufferedReader in = new BufferedReader(new InputStreamReader(
-            remote.getInputStream()));
-        PrintWriter out = new PrintWriter(remote.getOutputStream());
-
-        // read the data sent. We basically ignore it,
-        // stop reading once a blank line is hit. This
-        // blank line signals the end of the client HTTP
-        // headers.
-        String str = ".";
-        while (!str.equals(""))
-          str = in.readLine();
-
-        // Send the response
-        // Send the headers
-        out.println("HTTP/1.0 200 OK");
-        out.println("Content-Type: text/html");
-        out.println("Server: Bot");
-        // this blank line signals the end of the headers
-        out.println("");
-        // Send the HTML page
-        out.println("<H1>Welcome to the Ultra Mini-WebServer</H2>");
-        out.flush();
+  	    BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
+  	    BufferedReader socIn = new BufferedReader(new InputStreamReader(remote.getInputStream()));
+        PrintStream socOut = new PrintStream(remote.getOutputStream());
+        
+        System.out.println("New connexion from : " + s.getInetAddress());
+        
+        while(true) {
+	      try {
+	    	  System.out.println(socIn.readLine());
+	    	  socOut.println(stdIn.readLine());
+	      } catch(Exception e) {
+	          System.err.println(e);
+	          break;
+	      }
+        }
+        
+        socIn.close();
+        socOut.close();
         remote.close();
       } catch (Exception e) {
-        System.out.println("Error: " + e);
+        System.err.println("Error: " + e);
+        break;
       }
     }
   }
