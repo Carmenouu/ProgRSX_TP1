@@ -1,4 +1,4 @@
-package http.client;
+package multithread.client;
 
 import java.net.InetAddress;
 import java.net.Socket;

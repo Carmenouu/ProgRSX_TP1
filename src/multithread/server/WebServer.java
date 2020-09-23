@@ -1,6 +1,6 @@
 ///A Simple Web Server (WebServer.java)
 
-package http.server;
+package multithread.server;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
