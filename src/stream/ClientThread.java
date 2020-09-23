@@ -12,10 +12,11 @@ import java.net.*;
 
 public class ClientThread extends Thread {
 	
-	private Socket clientSocket;
+	public Socket clientSocket;
 	
 	ClientThread(Socket s) {
 		this.clientSocket = s;
+		EchoServerMultiThreaded.addClient(this.clientSocket);
 	}
 	
 	/**
@@ -23,13 +24,25 @@ public class ClientThread extends Thread {
 	* @param clientSocket the client socket
 	**/
 	public void run() {
-		try {
-			BufferedReader socIn = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));    
-			PrintStream socOut = new PrintStream(clientSocket.getOutputStream());
-			while(true) socOut.println(socIn.readLine());
-		} catch (Exception e) {
-			System.err.println("Error in EchoServer:" + e); 
+		
+		BufferedReader socIn = null;
+		
+		try { socIn = new BufferedReader(new InputStreamReader(this.clientSocket.getInputStream())); }
+		catch(IOException e) { System.err.println("Failed to get the socket's input stream."); }
+		
+		while(true) {
+			try { EchoServerMultiThreaded.setMessage(socIn.readLine()); }
+			catch(IOException e) {
+				System.out.println("Client disconnected " + this.clientSocket.getInetAddress());
+				break;
+			}
 		}
+		
+		EchoServerMultiThreaded.removeClient(this.clientSocket);
+		
+		try { socIn.close(); }
+		catch (IOException e) { System.err.println("Failed to properly close the BufferedReader."); }
+		
 	}
  
 }

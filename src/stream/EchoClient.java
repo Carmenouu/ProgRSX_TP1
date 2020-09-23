@@ -10,6 +10,60 @@ import java.io.*;
 import java.net.*;
 
 public class EchoClient {
+	
+	private static void runWritingThread(Socket sock) {
+
+		new Thread(new Runnable() {
+
+			public void run() {
+				
+				PrintStream socOut = null;
+				try { socOut = new PrintStream(sock.getOutputStream()); }
+				catch(IOException e) { System.err.println("Failed to get the socket's output stream."); }
+				BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
+				String line = null;
+				
+				while(true) {
+					try { line = stdIn.readLine(); }
+					catch(IOException e) { System.err.println("Error while reading console data."); }
+					if (line.equals(".")) break;
+					socOut.println(line);
+				}
+				
+			}
+			
+		}).start();
+		
+	}
+	
+	private static void runListeningThread(Socket sock) {
+		
+		new Thread(new Runnable() {
+
+			public void run() {
+				
+				BufferedReader socIn = null;
+				try { socIn = new BufferedReader(new InputStreamReader(sock.getInputStream())); }
+				catch(IOException e) { System.err.println("Failed to get the socket's input stream."); }
+				
+				while(true) {
+					try { System.out.println("New message : " + socIn.readLine()); }
+					catch(IOException e) {
+						System.err.println("The connexion with he server has been lost.");
+						break;
+					}
+				}
+				
+				try { socIn.close(); }
+				catch(IOException e) { System.err.println("Failed to properly close the BufferedReader."); }
+				try { sock.close(); }
+				catch(IOException e) { System.err.println("Failed to properly close the Socket."); }
+				
+			}
+		      
+		}).start();
+	      
+	}
 
 	/**
 	*  main method
@@ -18,10 +72,6 @@ public class EchoClient {
 	public static void main(String[] args) throws IOException {
 	
 		Socket sock = null;
-		PrintStream socOut = null;
-		BufferedReader stdIn = null;
-		BufferedReader socIn = null;
-		String line;
 		
 		if (args.length != 2) {
 			System.out.println("Usage: java EchoClient <EchoServer host> <EchoServer port>");
@@ -30,9 +80,6 @@ public class EchoClient {
 		
 		try {
 			sock = new Socket(args[0], Integer.parseInt(args[1]));
-			stdIn = new BufferedReader(new InputStreamReader(System.in));
-			socIn = new BufferedReader(new InputStreamReader(sock.getInputStream()));
-			socOut = new PrintStream(sock.getOutputStream());
 			System.out.println("Connected to " + sock.getInetAddress());
 		} catch (UnknownHostException e) {
 			System.err.println("Don't know about host:" + args[0]);
@@ -41,18 +88,10 @@ public class EchoClient {
 			System.err.println("Couldn't get I/O for " + "the connection to:"+ args[0]);
 			System.exit(1);
 		}
-		                     
-		while(true) {
-			line = stdIn.readLine();
-			if (line.equals(".")) break;
-			socOut.println(line);
-			System.out.println("New message : " + socIn.readLine());
-		}
-	    
-		socOut.close();
-		socIn.close();
-		stdIn.close();
-		sock.close();
+		
+		EchoClient.runWritingThread(sock);
+		EchoClient.runListeningThread(sock);
+		
 	}
 
 }
