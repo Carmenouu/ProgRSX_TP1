@@ -26,8 +26,9 @@ public class EchoClient {
 				while(true) {
 					try { line = stdIn.readLine(); }
 					catch(IOException e) { System.err.println("Error while reading console data."); }
-					if (line.equals(".")) break;
-					socOut.println(line);
+					
+					if (line.substring(0, 1).equals(".")) socOut.println(ClientThread.channelConnectionHeader + line.substring(1));
+					else socOut.println(ClientThread.messageHeader + line);
 				}
 				
 			}
@@ -89,8 +90,8 @@ public class EchoClient {
 			System.exit(1);
 		}
 		
-		EchoClient.runWritingThread(sock);
-		EchoClient.runListeningThread(sock);
+		runWritingThread(sock);
+		runListeningThread(sock);
 		
 	}
 
