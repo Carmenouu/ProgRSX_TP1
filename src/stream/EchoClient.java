@@ -13,35 +13,39 @@ import gui.ClientChat;
 
 public class EchoClient {
 	
-	private static ClientChat chat ;
+	private static Socket sock = null;
+	private static String pseudo;
+	private static ClientChat chat;
 	
-	private static void runWritingThread(Socket sock) {
-
-		new Thread(new Runnable() {
-
-			public void run() {
-				
-				PrintStream socOut = null;
-				try { socOut = new PrintStream(sock.getOutputStream()); }
-				catch(IOException e) { System.err.println("Failed to get the socket's output stream."); }
-				BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
-				String line = null;
-				
-				while(true) {
-					try { line = stdIn.readLine(); }
-					catch(IOException e) { System.err.println("Error while reading console data."); }
-					
-					if (line.substring(0, 1).equals(".")) socOut.println(ClientThread.channelConnectionHeader + line.substring(1));
-					else socOut.println(ClientThread.messageHeader + line);
-				}
-				
-			}
-			
-		}).start();
-		
-	}
+	public static void setPseudo(String pseudo) { EchoClient.pseudo = pseudo; }
 	
-	private static void runListeningThread(Socket sock) {
+//	private static void runWritingThread() {
+//
+//		new Thread(new Runnable() {
+//
+//			public void run() {
+//				
+//				PrintStream socOut = null;
+//				try { socOut = new PrintStream(sock.getOutputStream()); }
+//				catch(IOException e) { System.err.println("Failed to get the socket's output stream."); }
+//				BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
+//				String line = null;
+//				
+//				while(true) {
+//					try { line = stdIn.readLine(); }
+//					catch(IOException e) { System.err.println("Error while reading console data."); }
+//					
+//					if(line.substring(0, 1).equals(".")) socOut.println(ClientThread.channelConnectionHeader + line.substring(1));
+//					else socOut.println(ClientThread.messageHeader + line);
+//				}
+//				
+//			}
+//			
+//		}).start();
+//		
+//	}
+	
+	private static void runListeningThread() {
 		
 		new Thread(new Runnable() {
 
@@ -50,16 +54,13 @@ public class EchoClient {
 				BufferedReader socIn = null;
 				try { socIn = new BufferedReader(new InputStreamReader(sock.getInputStream())); }
 				catch(IOException e) { System.err.println("Failed to get the socket's input stream."); }
+				String message;
 				
 				while(true) {
-					try { 
-						System.out.println("New message : " + socIn.readLine()); 
-						chat.afficherNouveauMessage(socIn.readLine());
-						}
-					catch(IOException e) {
-						System.err.println("The connexion with he server has been lost.");
-						break;
-					}
+					try { message = socIn.readLine(); }
+					catch(IOException e) { System.err.println("The connexion with he server has been lost."); break; }
+					System.out.println("New message : " + message); 
+					chat.afficherNouveauMessage(message);
 				}
 				
 				try { socIn.close(); }
@@ -72,14 +73,23 @@ public class EchoClient {
 		}).start();
 	      
 	}
+	
+	public static void sendMessage(String message) {
+		
+		PrintStream socOut = null;
+		try { socOut = new PrintStream(sock.getOutputStream()); }
+		catch(IOException e) { System.err.println("Failed to get the socket's output stream."); }
+		
+		if(message.substring(0, 1).equals(".")) socOut.println(ClientThread.channelConnectionHeader + message.substring(1));
+		else socOut.println(ClientThread.messageHeader + pseudo + " : " + message);
+		
+	}
 
 	/**
 	*  main method
 	*  accepts a connection, receives a message from client then sends an echo to the client
 	**/
 	public static void main(String[] args) throws IOException {
-	
-		Socket sock = null;
 		
 		if (args.length != 2) {
 			System.out.println("Usage: java EchoClient <EchoServer host> <EchoServer port>");
@@ -96,10 +106,11 @@ public class EchoClient {
 			System.err.println("Couldn't get I/O for " + "the connection to:"+ args[0]);
 			System.exit(1);
 		}
+
+		runListeningThread();
+		chat = new ClientChat(/* args[0], args[1] */);
+		System.out.println("Connected as " + pseudo);
 		
-		chat = new ClientChat(args[0], args[1]);
-		//unWritingThread(sock);
-		runListeningThread(sock);
 	}
 
 }

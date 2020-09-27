@@ -28,24 +28,25 @@ import stream.EchoClient;
 
 @SuppressWarnings("serial")
 public class ClientChat extends JFrame {
+	
     private String titreChat = "Programmation Réseaux - Chat";
-    private String pseudo = null;
+//    private String pseudo = null;
 
     private JTextArea output = new JTextArea();
     private JTextField message = new JTextField();
     private JButton boutonEnvoi = new JButton("Envoyer");
-	private String hostname;
-	private String port;
-	private Socket sock = null ;
+//	private String hostname;
+//	private String port;
+//	private Socket sock = null ;
 
     
     /**
      * 
      * 
      */
-    public ClientChat(String parHostname, String parPort) {
-    	this.hostname = parHostname ;
-    	this.port = parPort ;
+    public ClientChat(/* String parHostname, String parPort */) {
+//    	this.hostname = parHostname ;
+//    	this.port = parPort ;
     	this.setTitle(titreChat);
         this.initialisation();
         this.identificationClient();
@@ -82,7 +83,8 @@ public class ClientChat extends JFrame {
                 message.addKeyListener(new KeyAdapter() {
                 	public void keyReleased(KeyEvent event) {
                 		if (event.getKeyChar() == '\n')
-                			envoiMessage(null);
+//                			envoiMessage(null);
+                        	EchoClient.sendMessage(message.getText());
                 	}
                 });
                 this.message.requestFocus();
@@ -98,7 +100,8 @@ public class ClientChat extends JFrame {
                                 // Gestion action d'envoi
                                 boutonEnvoi.addActionListener(new ActionListener() {
                                     public void actionPerformed(ActionEvent e) {
-                                        envoiMessage(e);
+//                                        envoiMessage(e);
+                                    	EchoClient.sendMessage(message.getText());
                                     }
                                 });
                                 this.boutonEnvoi.setSize(100, 50);
@@ -117,12 +120,23 @@ public class ClientChat extends JFrame {
      */
 
     public void identificationClient() {
-         this.pseudo = JOptionPane.showInputDialog(this, "Entrez votre pseudo : ",this.titreChat,  JOptionPane.OK_OPTION);
-         if (this.pseudo != null ){
-			this.setTitle(titreChat + " - Session de " + pseudo);
-         }
-		else  
-        	System.exit(0);
+//         this.pseudo = JOptionPane.showInputDialog(this, "Entrez votre pseudo : ",this.titreChat,  JOptionPane.OK_OPTION);
+//         if (this.pseudo != null ){
+//			this.setTitle(titreChat + " - Session de " + pseudo);
+//         }
+//		else  
+//        	System.exit(0);
+
+    	String pseudo;
+    	
+    	do { pseudo = JOptionPane.showInputDialog(this, "Entrez votre pseudo : ",this.titreChat,  JOptionPane.OK_OPTION); }
+    	while(pseudo.equals(""));
+    	
+    	if(pseudo == null) System.exit(0);
+    	
+    	EchoClient.setPseudo(pseudo);
+		this.setTitle(titreChat + " - Session de " + pseudo);
+		
     }
 
 
@@ -130,47 +144,47 @@ public class ClientChat extends JFrame {
      * 
      */
     
-    public void envoiMessage(ActionEvent e) {
-    	String msg=this.message.getText();
-    	
-    	if(msg!=null && !msg.isEmpty() && msg!="/n"){
-    		
-    		try {
-    			sock = new Socket(hostname, Integer.parseInt(port));
-    			System.out.println("Connected to " + sock.getInetAddress());
-    		} catch (UnknownHostException e1) {
-    			System.err.println("Don't know about host:" + hostname);
-    			System.exit(1);
-    		} catch (IOException e1) {
-    			System.err.println("Couldn't get I/O for " + "the connection to:"+ hostname);
-    			System.exit(1);
-    		}
-    		
-    		this.afficherNouveauMessage(pseudo + " : " + msg);
-    		this.message.setText("");
-    		this.message.requestFocus();
-    		
-    		new Thread(new Runnable() {
-
-    			public void run() {
-    				
-    				PrintStream socOut = null;
-    				try { socOut = new PrintStream(sock.getOutputStream()); }
-    				catch(IOException e) { System.err.println("Failed to get the socket's output stream."); }
-    				BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
-    				String line = pseudo + " : " + msg;
-    				//if (msg.equals(".")) socOut.println(ClientThread.channelConnectionHeader + msg);
-					//else 
-						socOut.println(ClientThread.messageHeader + line);		
-    				
-    			}
-    			
-    		}).run();
-    		
-    	}
-    	else
-    		System.exit(0);
-    }
+//    public void envoiMessage(ActionEvent e) {
+//    	String msg=this.message.getText();
+//    	
+//    	if(msg!=null && !msg.isEmpty() && msg!="/n"){
+//    		
+//    		try {
+//    			sock = new Socket(hostname, Integer.parseInt(port));
+//    			System.out.println("Connected to " + sock.getInetAddress());
+//    		} catch (UnknownHostException e1) {
+//    			System.err.println("Don't know about host:" + hostname);
+//    			System.exit(1);
+//    		} catch (IOException e1) {
+//    			System.err.println("Couldn't get I/O for " + "the connection to:"+ hostname);
+//    			System.exit(1);
+//    		}
+//    		
+//    		this.afficherNouveauMessage(pseudo + " : " + msg);
+//    		this.message.setText("");
+//    		this.message.requestFocus();
+//    		
+//    		new Thread(new Runnable() {
+//
+//    			public void run() {
+//    				
+//    				PrintStream socOut = null;
+//    				try { socOut = new PrintStream(sock.getOutputStream()); }
+//    				catch(IOException e) { System.err.println("Failed to get the socket's output stream."); }
+//    				BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
+//    				String line = pseudo + " : " + msg;
+//    				//if (msg.equals(".")) socOut.println(ClientThread.channelConnectionHeader + msg);
+//					//else 
+//						socOut.println(ClientThread.messageHeader + line);		
+//    				
+//    			}
+//    			
+//    		}).run();
+//    		
+//    	}
+//    	else
+//    		System.exit(0);
+//    }
     
 
 
