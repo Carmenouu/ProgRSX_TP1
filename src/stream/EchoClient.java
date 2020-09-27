@@ -9,7 +9,11 @@ package stream;
 import java.io.*;
 import java.net.*;
 
+import gui.ClientChat;
+
 public class EchoClient {
+	
+	private static ClientChat chat ;
 	
 	private static void runWritingThread(Socket sock) {
 
@@ -48,7 +52,10 @@ public class EchoClient {
 				catch(IOException e) { System.err.println("Failed to get the socket's input stream."); }
 				
 				while(true) {
-					try { System.out.println("New message : " + socIn.readLine()); }
+					try { 
+						System.out.println("New message : " + socIn.readLine()); 
+						chat.afficherNouveauMessage(socIn.readLine());
+						}
 					catch(IOException e) {
 						System.err.println("The connexion with he server has been lost.");
 						break;
@@ -90,9 +97,9 @@ public class EchoClient {
 			System.exit(1);
 		}
 		
-		runWritingThread(sock);
+		chat = new ClientChat(args[0], args[1]);
+		//unWritingThread(sock);
 		runListeningThread(sock);
-		
 	}
 
 }
