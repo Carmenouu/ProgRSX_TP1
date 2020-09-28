@@ -59,7 +59,7 @@ public class EchoClient {
 				while(true) {
 					try { message = socIn.readLine(); }
 					catch(IOException e) { System.err.println("The connexion with he server has been lost."); break; }
-					System.out.println("New message : " + message); 
+					System.out.println("New message : " + message);
 					chat.afficherNouveauMessage(message);
 				}
 				
@@ -80,8 +80,8 @@ public class EchoClient {
 		try { socOut = new PrintStream(sock.getOutputStream()); }
 		catch(IOException e) { System.err.println("Failed to get the socket's output stream."); }
 		
-		if(message.substring(0, 1).equals(".")) socOut.println(ClientThread.channelConnectionHeader + message.substring(1));
-		else socOut.println(ClientThread.messageHeader + pseudo + " : " + message);
+		if(message.substring(0, 1).equals("/")) socOut.println(message);
+		else socOut.println(pseudo + " : " + message);
 		
 	}
 
@@ -107,8 +107,8 @@ public class EchoClient {
 			System.exit(1);
 		}
 
-		runListeningThread();
 		chat = new ClientChat(/* args[0], args[1] */);
+		runListeningThread();
 		System.out.println("Connected as " + pseudo);
 		
 	}

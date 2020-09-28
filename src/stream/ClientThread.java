@@ -12,9 +12,7 @@ import java.net.*;
 
 public class ClientThread extends Thread {
 	
-	private final static int messageTypeLength = 3;
-	public final static String messageHeader = "MSG";
-	public final static String channelConnectionHeader = "CNL";
+	private final static String CHANNEL_CHANGE_COMMAND = "channel";
 	
 	private int channel;
 	private Socket socket;
@@ -38,19 +36,19 @@ public class ClientThread extends Thread {
 	
 	private void processMessage(String message) {
 		
-		switch(message.substring(0, messageTypeLength)) {
+		if(message.substring(0, 1).equals("/")) {
 		
-			case messageHeader:
-				System.out.println("[Channel " + this.channel + "] New message from " + this.socket.getInetAddress());
-				EchoServerMultiThreaded.sendMessage(message.substring(messageTypeLength), this.channel);
-				break;
+			switch(message.substring(1, message.indexOf(" "))) {
+			
+				case CHANNEL_CHANGE_COMMAND: this.changeChannel(this.channel, Integer.parseInt(message.substring(message.indexOf(" ") + 1))); break;
 				
-			case channelConnectionHeader:
-				this.changeChannel(this.channel, Integer.parseInt(message.substring(messageTypeLength)));
-				break;
+				default: System.out.println("[Channel " + this.channel + "] Could not read command : " + message); break;
+				
+			}
 			
-			default: System.out.println("[Channel " + this.channel + "] Could not read message from " + this.socket.getInetAddress()); break;
-			
+		} else {
+			System.out.println("[Channel " + this.channel + "] New message from " + this.socket.getInetAddress());
+			EchoServerMultiThreaded.sendMessage(message, this.channel);
 		}
 		
 	}
