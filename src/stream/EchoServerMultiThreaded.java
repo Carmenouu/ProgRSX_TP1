@@ -7,6 +7,7 @@
 
 package stream;
 
+import java.awt.Color;
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
@@ -15,8 +16,8 @@ import java.util.TreeMap;
 
 public class EchoServerMultiThreaded  {
 	
-	public final static int defaultChannel = 0;
-	public static TreeMap<Integer, List<Socket>> channels = new TreeMap<>();
+	private final static int DEFAULT_CHANNEL = 0;
+	private static TreeMap<Integer, List<Socket>> channels = new TreeMap<>();
 	
 	public static synchronized void connectClient(Socket client, int channel) {
 		
@@ -24,6 +25,7 @@ public class EchoServerMultiThreaded  {
 		channels.get(channel).add(client);
 		System.out.println("[Channel " + channel + "] New client : " + client.getInetAddress());
 		
+		EchoServerMultiThreaded.sendMessage(ClientThread.COLORS.get("info") + ClientThread.MESSAGE_DELIMITER + "Un utilisateur est entré dans le canal.", channel, null, false);
 		EchoServerMultiThreaded.retrieveHistoric(client, channel);
 		
 	}
@@ -32,6 +34,8 @@ public class EchoServerMultiThreaded  {
 
 		System.out.println("[Channel " + channel + "] Client left : " + client.getInetAddress());
 		channels.get(channel).remove(client);
+		
+		EchoServerMultiThreaded.sendMessage(ClientThread.COLORS.get("info") + ClientThread.MESSAGE_DELIMITER + "Un utilisateur est sorti du canal.", channel, null, false);
 		
 	}
 	
@@ -51,7 +55,7 @@ public class EchoServerMultiThreaded  {
 					
 					while(true) {
 						Socket clientSocket = listenSocket.accept();
-						new ClientThread(clientSocket, defaultChannel).start();
+						new ClientThread(clientSocket, DEFAULT_CHANNEL).start();
 					}
 				} catch (IOException e) { System.err.println("Error in EchoServer:" + e); }
 				
@@ -64,9 +68,11 @@ public class EchoServerMultiThreaded  {
 		
 	}
 	
-	public static synchronized void sendMessage(String message, int channel) {
+	public static synchronized void sendMessage(String message, int channel, Object... optionalArgs) {
+		
+		List<Socket> clients = optionalArgs.length == 0 || optionalArgs[0] == null ? channels.get(channel) : new ArrayList<>() {{ add((Socket)optionalArgs[0]); }};
 
-		for(Socket client : channels.get(channel)) {
+		for(Socket client : clients) {
 			System.out.println("[Channel " + channel + "] Sending message to " + client.getInetAddress());
 			
 	        PrintStream socOut = null;
@@ -77,23 +83,23 @@ public class EchoServerMultiThreaded  {
 			socOut.flush();
 			
 		}
-		
-		saveMessage(message, channel);
+
+		if(optionalArgs.length == 0 || optionalArgs.length > 1 && (Boolean)optionalArgs[1]) { saveMessage(message, channel); }
 		
 	}
 	
-	public static void sendMessage(Socket client, String message, int channel) {
-		
-		System.out.println("[Channel " + channel + "] Sending message to " + client.getInetAddress());
-		
-		PrintStream socOut = null;
-		try { socOut = new PrintStream(client.getOutputStream()); }
-		catch(IOException e) { System.err.println("Failed to get socket's output stream."); return; }
-		
-		socOut.println(message);
-		socOut.flush();
-		
-	}
+//	public static void sendMessage(Socket client, String message, int channel) {
+//		
+//		System.out.println("[Channel " + channel + "] Sending message to " + client.getInetAddress());
+//		
+//		PrintStream socOut = null;
+//		try { socOut = new PrintStream(client.getOutputStream()); }
+//		catch(IOException e) { System.err.println("Failed to get socket's output stream."); return; }
+//		
+//		socOut.println(message);
+//		socOut.flush();
+//		
+//	}
 	
 	private static String getChannelHistoricFile(int channel) {
 		
@@ -138,7 +144,7 @@ public class EchoServerMultiThreaded  {
 		do {
 			try { line = reader.readLine(); }
 			catch(IOException e) { System.err.println("Failed to read the next historized message."); break; }
-			if(line != null) sendMessage(client, line, channel);
+			if(line != null) sendMessage(line, channel, client, false);
 		} while(line != null);
 		
 		try { reader.close(); }

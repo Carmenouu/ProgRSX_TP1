@@ -80,7 +80,7 @@ public class ClientChat extends JFrame {
                 zoneEcriture.add(this.message, gbc_message);
                 
                 // Appui sur entrée
-                message.addKeyListener(new KeyAdapter() {
+                this.message.addKeyListener(new KeyAdapter() {
                 	public void keyReleased(KeyEvent event) {
                 		if (event.getKeyChar() == '\n')
 //                			envoiMessage(null);
@@ -188,9 +188,12 @@ public class ClientChat extends JFrame {
     
 
 
-	public void afficherNouveauMessage(String readLine) {
+	public void afficherNouveauMessage(String readLine, Color color) {
 		this.output.append(readLine+"\n");
-		
+	}
+	
+	public void clearChat() {
+		this.output.setText(null);
 	}
    
 }

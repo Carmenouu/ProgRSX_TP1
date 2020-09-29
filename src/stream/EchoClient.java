@@ -55,12 +55,16 @@ public class EchoClient {
 				try { socIn = new BufferedReader(new InputStreamReader(sock.getInputStream())); }
 				catch(IOException e) { System.err.println("Failed to get the socket's input stream."); }
 				String message;
+				int delimiterPos;
 				
 				while(true) {
 					try { message = socIn.readLine(); }
-					catch(IOException e) { System.err.println("The connexion with he server has been lost."); break; }
+					catch(IOException e) { System.err.println("The connexion with the server has been lost."); break; }
+					
 					System.out.println("New message : " + message);
-					chat.afficherNouveauMessage(message);
+					
+					delimiterPos = message.indexOf(ClientThread.MESSAGE_DELIMITER);
+					chat.afficherNouveauMessage(message.substring(delimiterPos + 1), ClientThread.COLORS.get(message.substring(0, delimiterPos)));
 				}
 				
 				try { socIn.close(); }

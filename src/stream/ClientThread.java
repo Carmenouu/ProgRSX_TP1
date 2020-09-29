@@ -7,12 +7,24 @@
 
 package stream;
 
+import java.awt.Color;
 import java.io.*;
 import java.net.*;
+import java.util.TreeMap;
 
 public class ClientThread extends Thread {
+
+	public final static String MESSAGE_DELIMITER = " ";
+	public final static TreeMap<String, Color> COLORS = new TreeMap<>() {{
+		put("normal", Color.BLACK);
+		put("info", Color.CYAN);
+		put("warning", Color.ORANGE);
+		put("alert", Color.RED);
+	}};
 	
-	private final static String CHANNEL_CHANGE_COMMAND = "channel";
+	private final static String COMMAND_ANNOUNCER = "/";
+	private final static String COMMAND_DELIMITER = " ";
+	private final static String COMMAND_CHANGE_CHANNEL_COMMAND = "channel";
 	
 	private int channel;
 	private Socket socket;
@@ -36,11 +48,15 @@ public class ClientThread extends Thread {
 	
 	private void processMessage(String message) {
 		
-		if(message.substring(0, 1).equals("/")) {
+		int delimiterPos;
 		
-			switch(message.substring(1, message.indexOf(" "))) {
+		if(message.substring(0, 1).equals(COMMAND_ANNOUNCER)) {
 			
-				case CHANNEL_CHANGE_COMMAND: this.changeChannel(this.channel, Integer.parseInt(message.substring(message.indexOf(" ") + 1))); break;
+			delimiterPos = message.indexOf(COMMAND_DELIMITER);
+		
+			switch(message.substring(1, delimiterPos)) {
+			
+				case COMMAND_CHANGE_CHANNEL_COMMAND: this.changeChannel(this.channel, Integer.parseInt(message.substring(delimiterPos + 1))); break;
 				
 				default: System.out.println("[Channel " + this.channel + "] Could not read command : " + message); break;
 				
@@ -48,7 +64,7 @@ public class ClientThread extends Thread {
 			
 		} else {
 			System.out.println("[Channel " + this.channel + "] New message from " + this.socket.getInetAddress());
-			EchoServerMultiThreaded.sendMessage(message, this.channel);
+			EchoServerMultiThreaded.sendMessage(COLORS.get("normal") + MESSAGE_DELIMITER + message, this.channel);
 		}
 		
 	}
