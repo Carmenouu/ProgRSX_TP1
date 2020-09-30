@@ -12,6 +12,12 @@ import java.io.*;
 import java.net.*;
 import java.util.TreeMap;
 
+/**
+ * 
+ * @author Nel Bouvier & Carmen Prévot
+ * @version 1.0
+ */
+
 public class ClientThread extends Thread {
 
 	public final static String MESSAGE_DELIMITER = " ";
@@ -34,23 +40,40 @@ public class ClientThread extends Thread {
 	private int channel;
 	private Socket socket;
 	
-	ClientThread(Socket s, int channel) {
+	/**
+     * Create an instance of ClientThread.
+     * 
+	 * @param socket The client's socket.
+	 * @param channel The channel in which the client is.
+     */
+	ClientThread(Socket socket, int channel) {
 		
-		this.socket = s;
+		this.socket = socket;
 		this.channel = channel;
 		
 		EchoServerMultiThreaded.connectClient(this.socket, this.channel);
 		
 	}
 	
-	public void changeChannel(int fromChannel, int toChannel) {
+	/**
+     * Move the client to another channel.
+     * 
+	 * @param channel The channel in which the client will be move.
+     */
+	public void moveToChannel(int channel) {
 		
-		EchoServerMultiThreaded.disconnectClient(this.socket, fromChannel);
-		EchoServerMultiThreaded.connectClient(this.socket, toChannel);
-		this.channel = toChannel;
+		EchoServerMultiThreaded.disconnectClient(this.socket, this.channel);
+		EchoServerMultiThreaded.connectClient(this.socket, channel);
+		this.channel = channel;
 		
 	}
 	
+	/**
+     * Process the message sent by the client.
+     * Perform a treatment if needed.
+     * 
+	 * @param message The channel recieved.
+     */
 	private void processMessage(String message) {
 		
 		int delimiterPos;
@@ -61,7 +84,7 @@ public class ClientThread extends Thread {
 		
 			switch(message.substring(1, delimiterPos)) {
 			
-				case COMMAND_CHANGE_CHANNEL_COMMAND: this.changeChannel(this.channel, Integer.parseInt(message.substring(delimiterPos + 1))); break;
+				case COMMAND_CHANGE_CHANNEL_COMMAND: this.moveToChannel(Integer.parseInt(message.substring(delimiterPos + 1))); break;
 				
 				default: System.out.println("[Channel " + this.channel + "] Could not read command : " + message); break;
 				
@@ -75,8 +98,7 @@ public class ClientThread extends Thread {
 	}
 	
 	/**
-	* receives a request from client then sends an echo to the client
-	* @param socket the client socket
+	* Starts the client thread.
 	**/
 	public void run() {
 		

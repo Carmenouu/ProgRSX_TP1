@@ -13,11 +13,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 
+/**
+ * 
+ * @author Nel Bouvier & Carmen Prévot
+ * @version 1.0
+ */
+
 public class EchoServerMultiThreaded  {
 	
 	private final static int DEFAULT_CHANNEL = 0;
 	private static TreeMap<Integer, List<Socket>> channels = new TreeMap<>();
 	
+	/**
+     * Connect a client to a channel.
+     * 
+	 * @param client The client we want to connect.
+	 * @param channel The channel used to connect the client into.
+     */
 	public static synchronized void connectClient(Socket client, int channel) {
 		
 		if(channels.get(channel) == null) channels.put(channel, new ArrayList<>());
@@ -32,6 +44,12 @@ public class EchoServerMultiThreaded  {
 		
 	}
 	
+	/**
+     * Disonnect a client from a channel.
+     * 
+	 * @param client The client we want to disconnect.
+	 * @param channel The channel from which the client needs to be disconnected.
+     */
 	public static synchronized void disconnectClient(Socket client, int channel) {
 
 		System.out.println("[Channel " + channel + "] Client left : " + client.getInetAddress());
@@ -41,8 +59,20 @@ public class EchoServerMultiThreaded  {
 		
 	}
 	
+	/**
+     * Get a list of clients in a channel.
+     * 
+	 * @param channel The channel we want to get clients of.
+	 * 
+	 * @return A List<Socket> which represents clients of the channel.
+     */
 	public static synchronized List<Socket> getClients(int channel) { return channels.get(channel); }
 	
+	/**
+     * Start the thread used to handle clients's connexions.
+     * 
+	 * @param port The port on which open the socket.
+     */
 	private static void runAcceptClientThread(int port) {
 
 		new Thread(new Runnable() {
@@ -70,6 +100,15 @@ public class EchoServerMultiThreaded  {
 		
 	}
 	
+	/**
+     * Send a message to every clients of a channel or only a client.
+     * Allows to save the message in the channel's historic.
+     * 
+	 * @param message The message to send.
+	 * @param channel The channel to send the message to.
+	 * @param client Optional - Instance of Socket - The client to send the message to.
+	 * @param save Optional - Instance of Boolean - The message to send.
+     */
 	public static synchronized void sendMessage(String message, int channel, Object... optionalArgs) {
 		
 		List<Socket> clients = optionalArgs.length == 0 || optionalArgs[0] == null ? channels.get(channel) : new ArrayList<>() {{ add((Socket)optionalArgs[0]); }};
@@ -90,19 +129,13 @@ public class EchoServerMultiThreaded  {
 		
 	}
 	
-//	public static void sendMessage(Socket client, String message, int channel) {
-//		
-//		System.out.println("[Channel " + channel + "] Sending message to " + client.getInetAddress());
-//		
-//		PrintStream socOut = null;
-//		try { socOut = new PrintStream(client.getOutputStream()); }
-//		catch(IOException e) { System.err.println("Failed to get socket's output stream."); return; }
-//		
-//		socOut.println(message);
-//		socOut.flush();
-//		
-//	}
-	
+	/**
+     * Get the channel's historic's file's path.
+     * 
+	 * @param channel The channel we want to get the historic of.
+	 * 
+	 * @return String the file's path.
+     */
 	private static String getChannelHistoricFile(int channel) {
 		
 		File file = new File("historics/" + channel + ".txt");
@@ -114,6 +147,12 @@ public class EchoServerMultiThreaded  {
 		
 	}
 	
+	/**
+     * Save a message in the channel's historic.
+     * 
+	 * @param message The message we want to save.
+	 * @param channel The channel in which the message needs to be saved.
+     */
 	private static void saveMessage(String message, int channel) {
 		
 		BufferedWriter writer = null;
@@ -133,6 +172,12 @@ public class EchoServerMultiThreaded  {
 		
 	}
 	
+	/**
+     * Retrieve the historic of a channel to a client.
+     * 
+	 * @param client The client to retrieve the historic to.
+	 * @param channel The channel to retrieve the historic of.
+     */
 	public static void retrieveHistoric(Socket client, int channel) {
 
 		String line = null;
@@ -155,10 +200,11 @@ public class EchoServerMultiThreaded  {
 	}
   
 	/**
-	* main method
-	* @param EchoServer port
-	* 
-	**/
+	 * Starts the server.
+	 * 
+	 * @param int port
+	 * 
+	 **/
 	public static void main(String args[]) {
 		   
 		if (args.length != 1) {

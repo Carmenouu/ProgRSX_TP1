@@ -11,40 +11,28 @@ import java.net.*;
 
 import gui.ClientChat;
 
+/**
+ * 
+ * @author Nel Bouvier & Carmen Prévot
+ * @version 1.0
+ */
+
 public class EchoClient {
 	
 	private static Socket sock = null;
 	private static String pseudo;
 	private static ClientChat chat;
 	
+	/**
+     * Set the client's nickname.
+     * 
+	 * @param pseudo The new client's nicknamet.
+     */
 	public static void setPseudo(String pseudo) { EchoClient.pseudo = pseudo; }
 	
-//	private static void runWritingThread() {
-//
-//		new Thread(new Runnable() {
-//
-//			public void run() {
-//				
-//				PrintStream socOut = null;
-//				try { socOut = new PrintStream(sock.getOutputStream()); }
-//				catch(IOException e) { System.err.println("Failed to get the socket's output stream."); }
-//				BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
-//				String line = null;
-//				
-//				while(true) {
-//					try { line = stdIn.readLine(); }
-//					catch(IOException e) { System.err.println("Error while reading console data."); }
-//					
-//					if(line.substring(0, 1).equals(".")) socOut.println(ClientThread.channelConnectionHeader + line.substring(1));
-//					else socOut.println(ClientThread.messageHeader + line);
-//				}
-//				
-//			}
-//			
-//		}).start();
-//		
-//	}
-	
+	/**
+     * Start the thread used to handle server's messages.
+     */
 	private static void runListeningThread() {
 		
 		new Thread(new Runnable() {
@@ -78,6 +66,11 @@ public class EchoClient {
 	      
 	}
 	
+	/**
+     * Send a message to the server.
+     * 
+	 * @param message The message to send.
+     */
 	public static void sendMessage(String message) {
 		
 		PrintStream socOut = null;
@@ -92,6 +85,11 @@ public class EchoClient {
 		
 	}
 	
+	/**
+     * Process a message before sending it if necessary.
+     * 
+	 * @param message The message to process.
+     */
 	private static void processMessage(String message) {
 		
 		int delimiterPos  = message.indexOf(ClientThread.COMMAND_DELIMITER);
@@ -106,8 +104,10 @@ public class EchoClient {
 	}
 
 	/**
-	*  main method
-	*  accepts a connection, receives a message from client then sends an echo to the client
+	*  Starts the client.
+	*  
+	*  @param hostname The name of the server to connect to.
+	*  @param port The port of the server.
 	**/
 	public static void main(String[] args) throws IOException {
 		
