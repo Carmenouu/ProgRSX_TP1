@@ -21,10 +21,13 @@ public class EchoServerMultiThreaded  {
 	public static synchronized void connectClient(Socket client, int channel) {
 		
 		if(channels.get(channel) == null) channels.put(channel, new ArrayList<>());
+		
+		EchoServerMultiThreaded.sendMessage(ClientThread.COLORS.get("info") + ClientThread.MESSAGE_DELIMITER + "Un utilisateur est entré dans le canal.", channel, null, false);
+		
 		channels.get(channel).add(client);
 		System.out.println("[Channel " + channel + "] New client : " + client.getInetAddress());
 		
-		EchoServerMultiThreaded.sendMessage(ClientThread.COLORS.get("info") + ClientThread.MESSAGE_DELIMITER + "Un utilisateur est entré dans le canal.", channel, null, false);
+		EchoServerMultiThreaded.sendMessage(ClientThread.COLORS.get("info") + ClientThread.MESSAGE_DELIMITER + "Vous venez d'entrer dans le canal " + channel + ".", channel, client, false);
 		EchoServerMultiThreaded.retrieveHistoric(client, channel);
 		
 	}
