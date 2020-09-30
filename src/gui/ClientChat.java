@@ -8,6 +8,10 @@ import java.awt.*;
 import java.awt.event.*;
 
 import javax.swing.*;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyleContext;
 
 import stream.EchoClient;
 
@@ -22,7 +26,7 @@ public class ClientChat extends JFrame {
 	
     private String titreChat = "Programmation Réseaux - Chat";
 
-    private JTextArea output = new JTextArea();
+    private JTextPane output = new JTextPane();
     private JTextField message = new JTextField();
     private JButton boutonEnvoi = new JButton("Envoyer");
 
@@ -92,10 +96,7 @@ public class ClientChat extends JFrame {
         // Mise en forme de la fenêtre
         this.setSize(800,700);
         this.setVisible(true);
-        this.output.setSize(550, 350);
-        this.output.setBackground(new Color(220,220,220));
-        this.output.setMargin(new Insets(10,10,10,10));
-        this.output.setEditable(false);
+        this.output.setMargin(new Insets(5, 5, 5, 5));
         
     }
     /**
@@ -116,8 +117,21 @@ public class ClientChat extends JFrame {
 		
     }
 
+    private void appendToPane(JTextPane tp, String msg, Color c) {
+        StyleContext sc = StyleContext.getDefaultStyleContext();
+        AttributeSet aset = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, c);
+
+        aset = sc.addAttribute(aset, StyleConstants.FontFamily, "Lucida Console");
+        aset = sc.addAttribute(aset, StyleConstants.Alignment, StyleConstants.ALIGN_JUSTIFIED);
+
+        int len = tp.getDocument().getLength();
+        tp.setCaretPosition(len);
+        tp.setCharacterAttributes(aset, false);
+        tp.replaceSelection(msg);
+    }
+
 	public void afficherNouveauMessage(String readLine, Color color) {
-		this.output.append(readLine+"\n");
+		this.appendToPane(this.output, readLine + "\n", color);
 	}
 	
 	public void clearChat() {

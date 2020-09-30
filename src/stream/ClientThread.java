@@ -28,7 +28,7 @@ public class ClientThread extends Thread {
 	public final static String COLOR_ALERT = "alert";
 	public final static TreeMap<String, Color> COLORS = new TreeMap<>() {{
 		put(COLOR_NORMAL, Color.BLACK);
-		put(COLOR_INFO, Color.CYAN);
+		put(COLOR_INFO, Color.BLUE);
 		put(COLOR_WARNING, Color.ORANGE);
 		put(COLOR_ALERT, Color.RED);
 	}};
