@@ -53,6 +53,14 @@ public class ClientChat extends JFrame {
         JScrollPane scroll = new JScrollPane(output);
         panel.add(scroll);
         JPanel zoneEcriture = new JPanel();
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                EchoClient.closeConnexion();
+                e.getWindow().dispose();
+            }
+        });
         GridBagLayout gbl_zoneEcriture = new GridBagLayout();
         gbl_zoneEcriture.columnWidths = new int[] {40, 500, 40, 100};
         gbl_zoneEcriture.rowHeights = new int[] {20, 150, 20};

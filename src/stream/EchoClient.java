@@ -102,6 +102,16 @@ public class EchoClient {
 		}
 		
 	}
+	
+	/**
+     * Close the client connexion to the server.
+     */
+	public static void closeConnexion() {
+		
+		try { sock.close(); }
+		catch(Exception e) { System.err.println("Failed to properly close the Socket."); }
+		
+	}
 
 	/**
 	*  Starts the client.
