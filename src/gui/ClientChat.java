@@ -6,18 +6,9 @@ package gui ;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintStream;
-import java.net.Socket;
-import java.net.UnknownHostException;
 
 import javax.swing.*;
 
-import org.eclipse.swt.layout.RowLayout;
-
-import stream.ClientThread;
 import stream.EchoClient;
 
 /**

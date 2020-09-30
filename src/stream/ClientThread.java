@@ -15,16 +15,21 @@ import java.util.TreeMap;
 public class ClientThread extends Thread {
 
 	public final static String MESSAGE_DELIMITER = " ";
+	
+	public final static String COLOR_NORMAL = "normal";
+	public final static String COLOR_INFO = "info";
+	public final static String COLOR_WARNING = "warning";
+	public final static String COLOR_ALERT = "alert";
 	public final static TreeMap<String, Color> COLORS = new TreeMap<>() {{
-		put("normal", Color.BLACK);
-		put("info", Color.CYAN);
-		put("warning", Color.ORANGE);
-		put("alert", Color.RED);
+		put(COLOR_NORMAL, Color.BLACK);
+		put(COLOR_INFO, Color.CYAN);
+		put(COLOR_WARNING, Color.ORANGE);
+		put(COLOR_ALERT, Color.RED);
 	}};
 	
-	private final static String COMMAND_ANNOUNCER = "/";
-	private final static String COMMAND_DELIMITER = " ";
-	private final static String COMMAND_CHANGE_CHANNEL_COMMAND = "channel";
+	public final static String COMMAND_ANNOUNCER = "/";
+	public final static String COMMAND_DELIMITER = " ";
+	public final static String COMMAND_CHANGE_CHANNEL_COMMAND = "channel";
 	
 	private int channel;
 	private Socket socket;
@@ -64,7 +69,7 @@ public class ClientThread extends Thread {
 			
 		} else {
 			System.out.println("[Channel " + this.channel + "] New message from " + this.socket.getInetAddress());
-			EchoServerMultiThreaded.sendMessage(COLORS.get("normal") + MESSAGE_DELIMITER + message, this.channel);
+			EchoServerMultiThreaded.sendMessage(COLOR_NORMAL + MESSAGE_DELIMITER + message, this.channel);
 		}
 		
 	}

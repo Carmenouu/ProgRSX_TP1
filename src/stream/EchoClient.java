@@ -84,8 +84,24 @@ public class EchoClient {
 		try { socOut = new PrintStream(sock.getOutputStream()); }
 		catch(IOException e) { System.err.println("Failed to get the socket's output stream."); }
 		
-		if(message.substring(0, 1).equals("/")) socOut.println(message);
+		if(message.substring(0, 1).equals(ClientThread.COMMAND_ANNOUNCER)) {
+			processMessage(message);
+			socOut.println(message);
+		}
 		else socOut.println(pseudo + " : " + message);
+		
+	}
+	
+	private static void processMessage(String message) {
+		
+		int delimiterPos  = message.indexOf(ClientThread.COMMAND_DELIMITER);
+		
+		switch(message.substring(1, delimiterPos)) {
+		
+			case ClientThread.COMMAND_CHANGE_CHANNEL_COMMAND: chat.clearChat(); break;
+			default: break;
+		
+		}
 		
 	}
 
