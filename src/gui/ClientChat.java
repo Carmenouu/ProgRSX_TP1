@@ -16,7 +16,7 @@ import javax.swing.text.StyleContext;
 import stream.EchoClient;
 
 /**
- * 
+ * The Client Chat interface.
  * @author Nel Bouvier & Carmen Prévot
  * @version 1.0
  */
@@ -24,15 +24,29 @@ import stream.EchoClient;
 @SuppressWarnings("serial")
 public class ClientChat extends JFrame {
 	
+	/**
+	 * The title of the chat window
+	 */
     private String titreChat = "Programmation Réseaux - Chat";
 
+    /**
+     * The output of the chat, including all the message on this chat channel.
+     */
     private JTextPane output = new JTextPane();
+    
+    /**
+     * The text input field, where the client writes his new message.
+     */
     private JTextField message = new JTextField();
+    
+    /**
+     * The sending button.
+     */
     private JButton boutonEnvoi = new JButton("Envoyer");
 
     
     /**
-     * 
+     * Creates a new instance of ClientChat.
      * 
      */
     public ClientChat() {
@@ -42,6 +56,7 @@ public class ClientChat extends JFrame {
     }
 
     /**
+     * Initializes the chat interface.
      * 
      */
     public void initialisation() {
@@ -99,10 +114,11 @@ public class ClientChat extends JFrame {
         this.output.setMargin(new Insets(5, 5, 5, 5));
         
     }
+    
     /**
+     * Asks for client's nickname.
      * 
      */
-
     public void identificationClient() {
 
     	String pseudo;
@@ -117,6 +133,12 @@ public class ClientChat extends JFrame {
 		
     }
 
+    /**
+     * Appends a new message to the chat pane, setting the color of the message.
+     * @param tp The chat pane.
+     * @param msg The new message to add.
+     * @param c The color of the message.
+     */
     private void appendToPane(JTextPane tp, String msg, Color c) {
         StyleContext sc = StyleContext.getDefaultStyleContext();
         AttributeSet aset = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, c);
@@ -130,10 +152,18 @@ public class ClientChat extends JFrame {
         tp.replaceSelection(msg);
     }
 
+    /**
+     * Shows the new message on the chat interface (calling the appendToPane method).
+     * @param readLine The new message.
+     * @param color The color of this new message.
+     */
 	public void afficherNouveauMessage(String readLine, Color color) {
 		this.appendToPane(this.output, readLine + "\n", color);
 	}
 	
+	/**
+	 * Clears the chat output. Used when the client moves to another channel.
+	 */
 	public void clearChat() {
 		this.output.setText(null);
 	}

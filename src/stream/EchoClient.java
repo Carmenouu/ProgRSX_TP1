@@ -19,8 +19,19 @@ import gui.ClientChat;
 
 public class EchoClient {
 	
+	/**
+	 * The client socket.
+	 */
 	private static Socket sock = null;
+	
+	/**
+	 * The client nickname.
+	 */
 	private static String pseudo;
+	
+	/**
+	 * The client chat interface.
+	 */
 	private static ClientChat chat;
 	
 	/**

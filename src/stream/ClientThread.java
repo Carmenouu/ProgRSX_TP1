@@ -26,6 +26,10 @@ public class ClientThread extends Thread {
 	public final static String COLOR_INFO = "info";
 	public final static String COLOR_WARNING = "warning";
 	public final static String COLOR_ALERT = "alert";
+	
+	/**
+	 * The set of colors used in chat interface.
+	 */
 	public final static TreeMap<String, Color> COLORS = new TreeMap<>() {{
 		put(COLOR_NORMAL, Color.BLACK);
 		put(COLOR_INFO, Color.BLUE);
@@ -37,7 +41,14 @@ public class ClientThread extends Thread {
 	public final static String COMMAND_DELIMITER = " ";
 	public final static String COMMAND_CHANGE_CHANNEL_COMMAND = "channel";
 	
+	/**
+	 * The current channel.
+	 */
 	private int channel;
+	
+	/**
+	 * The client socket.
+	 */
 	private Socket socket;
 	
 	/**
