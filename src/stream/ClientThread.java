@@ -86,7 +86,7 @@ public class ClientThread extends Thread {
 			
 				case COMMAND_CHANGE_CHANNEL_COMMAND: this.moveToChannel(Integer.parseInt(message.substring(delimiterPos + 1))); break;
 				
-				default: System.out.println("[Channel " + this.channel + "] Could not read command : " + message); break;
+				default: System.out.println("[Channel " + this.channel + "] Could not read the command : " + message); break;
 				
 			}
 			
