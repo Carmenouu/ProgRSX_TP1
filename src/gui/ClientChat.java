@@ -40,7 +40,7 @@ public class ClientChat extends JFrame {
     private JTextField message = new JTextField();
     
     /**
-     * The sending button.
+     * The submit button.
      */
     private JButton boutonEnvoi = new JButton("Envoyer");
 
