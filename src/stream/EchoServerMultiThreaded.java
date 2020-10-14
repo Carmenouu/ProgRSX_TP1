@@ -15,7 +15,7 @@ import java.util.TreeMap;
 
 /**
  * 
- * @author Nel Bouvier & Carmen Prévot
+ * @author Nel Bouvier and Carmen Prévot
  * @version 1.0
  */
 
@@ -64,12 +64,12 @@ public class EchoServerMultiThreaded  {
      * 
 	 * @param channel The channel we want to get clients of.
 	 * 
-	 * @return A List<Socket> which represents clients of the channel.
+	 * @return A List of Sockets which represents clients of the channel.
      */
 	public static synchronized List<Socket> getClients(int channel) { return channels.get(channel); }
 	
 	/**
-     * Start the thread used to handle clients's connexions.
+     * Start the thread used to handle clients's connections.
      * 
 	 * @param port The port on which open the socket.
      */
@@ -108,8 +108,7 @@ public class EchoServerMultiThreaded  {
      * 
 	 * @param message The message to send.
 	 * @param channel The channel to send the message to.
-	 * @param client Optional - Instance of Socket - The client to send the message to.
-	 * @param save Optional - Instance of Boolean - The message to send.
+	 * @param optionalArgs Options : instance of Socket - The client to send the message to. Instance of Boolean - The message to send.
      */
 	public static synchronized void sendMessage(String message, int channel, Object... optionalArgs) {
 		
@@ -206,7 +205,7 @@ public class EchoServerMultiThreaded  {
 	/**
 	 * Starts the server.
 	 * 
-	 * @param int port
+	 * @param args The port number.
 	 * 
 	 **/
 	public static void main(String args[]) {

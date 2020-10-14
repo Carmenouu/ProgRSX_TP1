@@ -14,7 +14,7 @@ import java.util.TreeMap;
 
 /**
  * 
- * @author Nel Bouvier & Carmen Prévot
+ * @author Nel Bouvier and Carmen Prévot
  * @version 1.0
  */
 

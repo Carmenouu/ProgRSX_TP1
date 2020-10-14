@@ -13,7 +13,7 @@ import gui.ClientChat;
 
 /**
  * 
- * @author Nel Bouvier & Carmen Prévot
+ * @author Nel Bouvier and Carmen Prévot
  * @version 1.0
  */
 
@@ -37,7 +37,7 @@ public class EchoClient {
 	/**
      * Set the client's nickname.
      * 
-	 * @param pseudo The new client's nicknamet.
+	 * @param pseudo The new client's nickname.
      */
 	public static void setPseudo(String pseudo) { EchoClient.pseudo = pseudo; }
 	
@@ -125,11 +125,10 @@ public class EchoClient {
 	}
 
 	/**
-	*  Starts the client.
-	*  
-	*  @param hostname The name of the server to connect to.
-	*  @param port The port of the server.
-	**/
+	 *  Starts the client. 
+	 * @param args The name of the server to connect to and the port of the server.
+	 * @throws IOException Exceptions can be thrown if there are connection issues.
+	 */
 	public static void main(String[] args) throws IOException {
 		
 		if (args.length != 2) {
