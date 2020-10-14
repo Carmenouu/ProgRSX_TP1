@@ -1,10 +1,3 @@
-/***
- * EchoServer
- * Example of a TCP server
- * Date: 10/01/04
- * Authors:
- */
-
 package stream;
 
 import java.io.*;
@@ -14,7 +7,6 @@ import java.util.List;
 import java.util.TreeMap;
 
 /**
- * 
  * @author Nel Bouvier and Carmen Prévot
  * @version 1.0
  */
