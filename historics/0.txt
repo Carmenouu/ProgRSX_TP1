@@ -2,3 +2,4 @@ normal Nel : Salut
 normal Nel : test
 normal Dorian : Hola
 normal Nel : Salut
+normal Carmen : Bonjour Nel
