@@ -18,7 +18,7 @@ import java.util.TreeMap;
  * @version 1.0
  */
 
-public class ClientThread extends Thread {
+public class ServerClientThread extends Thread {
 
 	public final static String MESSAGE_DELIMITER = " ";
 	
@@ -57,12 +57,12 @@ public class ClientThread extends Thread {
 	 * @param socket The client's socket.
 	 * @param channel The channel in which the client is.
      */
-	ClientThread(Socket socket, int channel) {
+	ServerClientThread(Socket socket, int channel) {
 		
 		this.socket = socket;
 		this.channel = channel;
 		
-		EchoServerMultiThreaded.connectClient(this.socket, this.channel);
+		ServerMultiThreaded.connectClient(this.socket, this.channel);
 		
 	}
 	
@@ -73,8 +73,8 @@ public class ClientThread extends Thread {
      */
 	public void moveToChannel(int channel) {
 		
-		EchoServerMultiThreaded.disconnectClient(this.socket, this.channel);
-		EchoServerMultiThreaded.connectClient(this.socket, channel);
+		ServerMultiThreaded.disconnectClient(this.socket, this.channel);
+		ServerMultiThreaded.connectClient(this.socket, channel);
 		this.channel = channel;
 		
 	}
@@ -103,7 +103,7 @@ public class ClientThread extends Thread {
 			
 		} else {
 			System.out.println("[Channel " + this.channel + "] New message from " + this.socket.getInetAddress());
-			EchoServerMultiThreaded.sendMessage(COLOR_NORMAL + MESSAGE_DELIMITER + message, this.channel);
+			ServerMultiThreaded.sendMessage(COLOR_NORMAL + MESSAGE_DELIMITER + message, this.channel);
 		}
 		
 	}
@@ -129,7 +129,7 @@ public class ClientThread extends Thread {
 			this.processMessage(message);
 		}
 		
-		EchoServerMultiThreaded.disconnectClient(this.socket, this.channel);
+		ServerMultiThreaded.disconnectClient(this.socket, this.channel);
 		
 		try { socIn.close(); }
 		catch (IOException e) { System.err.println("Failed to properly close the BufferedReader."); }

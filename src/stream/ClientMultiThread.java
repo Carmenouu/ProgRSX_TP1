@@ -1,15 +1,9 @@
-/***
- * EchoClient
- * Example of a TCP client 
- * Date: 10/01/04
- * Authors:
- */
 package stream;
 
 import java.io.*;
 import java.net.*;
 
-import gui.ClientChat;
+import gui.ClientMultiThreadChat;
 
 /**
  * 
@@ -17,7 +11,7 @@ import gui.ClientChat;
  * @version 1.0
  */
 
-public class EchoClient {
+public class ClientMultiThread {
 	
 	/**
 	 * The client socket.
@@ -32,14 +26,14 @@ public class EchoClient {
 	/**
 	 * The client chat interface.
 	 */
-	private static ClientChat chat;
+	private static ClientMultiThreadChat chat;
 	
 	/**
      * Set the client's nickname.
      * 
 	 * @param pseudo The new client's nickname.
      */
-	public static void setPseudo(String pseudo) { EchoClient.pseudo = pseudo; }
+	public static void setPseudo(String pseudo) { ClientMultiThread.pseudo = pseudo; }
 	
 	/**
      * Start the thread used to handle server's messages.
@@ -62,8 +56,8 @@ public class EchoClient {
 					
 					System.out.println("New message : " + message);
 					
-					delimiterPos = message.indexOf(ClientThread.MESSAGE_DELIMITER);
-					chat.afficherNouveauMessage(message.substring(delimiterPos + 1), ClientThread.COLORS.get(message.substring(0, delimiterPos)));
+					delimiterPos = message.indexOf(ServerClientThread.MESSAGE_DELIMITER);
+					chat.afficherNouveauMessage(message.substring(delimiterPos + 1), ServerClientThread.COLORS.get(message.substring(0, delimiterPos)));
 				}
 				
 				try { socIn.close(); }
@@ -88,7 +82,7 @@ public class EchoClient {
 		try { socOut = new PrintStream(sock.getOutputStream()); }
 		catch(IOException e) { System.err.println("Failed to get the socket's output stream."); }
 		
-		if(message.substring(0, 1).equals(ClientThread.COMMAND_ANNOUNCER)) {
+		if(message.substring(0, 1).equals(ServerClientThread.COMMAND_ANNOUNCER)) {
 			processMessage(message);
 			socOut.println(message);
 		}
@@ -103,11 +97,11 @@ public class EchoClient {
      */
 	private static void processMessage(String message) {
 		
-		int delimiterPos  = message.indexOf(ClientThread.COMMAND_DELIMITER);
+		int delimiterPos  = message.indexOf(ServerClientThread.COMMAND_DELIMITER);
 		
 		switch(message.substring(1, delimiterPos)) {
 		
-			case ClientThread.COMMAND_CHANGE_CHANNEL_COMMAND: chat.clearChat(); break;
+			case ServerClientThread.COMMAND_CHANGE_CHANNEL_COMMAND: chat.clearChat(); break;
 			default: break;
 		
 		}
@@ -147,7 +141,7 @@ public class EchoClient {
 			System.exit(1);
 		}
 
-		chat = new ClientChat(/* args[0], args[1] */);
+		chat = new ClientMultiThreadChat(/* args[0], args[1] */);
 		runListeningThread();
 		System.out.println("Connected as " + pseudo);
 		

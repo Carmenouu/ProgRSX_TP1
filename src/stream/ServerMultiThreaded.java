@@ -11,7 +11,7 @@ import java.util.TreeMap;
  * @version 1.0
  */
 
-public class EchoServerMultiThreaded  {
+public class ServerMultiThreaded  {
 	
 	private final static int DEFAULT_CHANNEL = 0;
 	private static TreeMap<Integer, List<Socket>> channels = new TreeMap<>();
@@ -26,12 +26,12 @@ public class EchoServerMultiThreaded  {
 		
 		if(channels.get(channel) == null) channels.put(channel, new ArrayList<>());
 		
-		sendMessage(ClientThread.COLOR_INFO + ClientThread.MESSAGE_DELIMITER + "Un utilisateur est entré dans le canal.", channel, null, false);
+		sendMessage(ServerClientThread.COLOR_INFO + ServerClientThread.MESSAGE_DELIMITER + "Un utilisateur est entré dans le canal.", channel, null, false);
 		
 		channels.get(channel).add(client);
 		System.out.println("[Channel " + channel + "] New client : " + client.getInetAddress());
 		
-		sendMessage(ClientThread.COLOR_INFO + ClientThread.MESSAGE_DELIMITER + "Vous venez d'entrer dans le canal " + channel + ".", channel, client, false);
+		sendMessage(ServerClientThread.COLOR_INFO + ServerClientThread.MESSAGE_DELIMITER + "Vous venez d'entrer dans le canal " + channel + ".", channel, client, false);
 		retrieveHistoric(client, channel);
 		
 	}
@@ -47,7 +47,7 @@ public class EchoServerMultiThreaded  {
 		System.out.println("[Channel " + channel + "] Client left : " + client.getInetAddress());
 		channels.get(channel).remove(client);
 		
-		sendMessage(ClientThread.COLOR_INFO + ClientThread.MESSAGE_DELIMITER + "Un utilisateur est sorti du canal.", channel, null, false);
+		sendMessage(ServerClientThread.COLOR_INFO + ServerClientThread.MESSAGE_DELIMITER + "Un utilisateur est sorti du canal.", channel, null, false);
 		
 	}
 	
@@ -80,7 +80,7 @@ public class EchoServerMultiThreaded  {
 					
 					while(true) {
 						Socket clientSocket = listenSocket.accept();
-						new ClientThread(clientSocket, DEFAULT_CHANNEL).start();
+						new ServerClientThread(clientSocket, DEFAULT_CHANNEL).start();
 					}
 					
 				} catch (IOException e) { System.err.println("Error in EchoServer:" + e); }

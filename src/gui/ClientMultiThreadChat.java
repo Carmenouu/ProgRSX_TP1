@@ -1,7 +1,3 @@
-/**
- * 
- * 
- */
 package gui ;
 
 import java.awt.*;
@@ -13,16 +9,16 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 
-import stream.EchoClient;
+import stream.ClientMultiThread;
 
 /**
  * The Client Chat interface.
- * @author Nel Bouvier & Carmen Prévot
+ * @author Nel Bouvier et Carmen Prévot
  * @version 1.0
  */
 
 @SuppressWarnings("serial")
-public class ClientChat extends JFrame {
+public class ClientMultiThreadChat extends JFrame {
 	
 	/**
 	 * The title of the chat window
@@ -49,7 +45,7 @@ public class ClientChat extends JFrame {
      * Creates a new instance of ClientChat.
      * 
      */
-    public ClientChat() {
+    public ClientMultiThreadChat() {
     	this.setTitle(titreChat);
         this.initialisation();
         this.identificationClient();
@@ -72,7 +68,7 @@ public class ClientChat extends JFrame {
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                EchoClient.closeConnexion();
+                ClientMultiThread.closeConnexion();
                 e.getWindow().dispose();
             }
         });
@@ -83,38 +79,38 @@ public class ClientChat extends JFrame {
         gbl_zoneEcriture.rowWeights = new double[]{0.0, 0.0, 0.0};
         zoneEcriture.setLayout(gbl_zoneEcriture);
         panel.add(zoneEcriture);
-                GridBagConstraints gbc_message = new GridBagConstraints();
-                gbc_message.gridheight = 2;
-                gbc_message.fill = GridBagConstraints.BOTH;
-                gbc_message.insets = new Insets(0, 0, 0, 5);
-                gbc_message.gridx = 1;
-                gbc_message.gridy = 1;
-                zoneEcriture.add(this.message, gbc_message);
+        GridBagConstraints gbc_message = new GridBagConstraints();
+        gbc_message.gridheight = 2;
+        gbc_message.fill = GridBagConstraints.BOTH;
+        gbc_message.insets = new Insets(0, 0, 0, 5);
+        gbc_message.gridx = 1;
+        gbc_message.gridy = 1;
+        zoneEcriture.add(this.message, gbc_message);
+        
+        // Appui sur entrée
+        this.message.addKeyListener(new KeyAdapter() {
+        	public void keyReleased(KeyEvent event) {
+        		if (event.getKeyChar() == '\n')
+                	ClientMultiThread.sendMessage(message.getText());
+        	}
+        });
+        this.message.requestFocus();
+        this.message.setSize(500, 150);
+        this.message.setMargin(new Insets(10,10,10,10));
+        GridBagConstraints gbc_boutonEnvoi = new GridBagConstraints();
+        gbc_boutonEnvoi.fill = GridBagConstraints.HORIZONTAL;
+        gbc_boutonEnvoi.insets = new Insets(0, 0, 5, 5);
+        gbc_boutonEnvoi.gridx = 3;
+        gbc_boutonEnvoi.gridy = 1;
+        zoneEcriture.add(this.boutonEnvoi, gbc_boutonEnvoi);
                 
-                // Appui sur entrée
-                this.message.addKeyListener(new KeyAdapter() {
-                	public void keyReleased(KeyEvent event) {
-                		if (event.getKeyChar() == '\n')
-                        	EchoClient.sendMessage(message.getText());
-                	}
-                });
-                this.message.requestFocus();
-                this.message.setSize(500, 150);
-                this.message.setMargin(new Insets(10,10,10,10));
-                        GridBagConstraints gbc_boutonEnvoi = new GridBagConstraints();
-                        gbc_boutonEnvoi.fill = GridBagConstraints.HORIZONTAL;
-                        gbc_boutonEnvoi.insets = new Insets(0, 0, 5, 5);
-                        gbc_boutonEnvoi.gridx = 3;
-                        gbc_boutonEnvoi.gridy = 1;
-                        zoneEcriture.add(this.boutonEnvoi, gbc_boutonEnvoi);
-                        
-                                // Gestion action d'envoi
-                                boutonEnvoi.addActionListener(new ActionListener() {
-                                    public void actionPerformed(ActionEvent e) {
-                                    	EchoClient.sendMessage(message.getText());
-                                    }
-                                });
-                                this.boutonEnvoi.setSize(100, 50);
+        // Gestion action d'envoi
+        boutonEnvoi.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	ClientMultiThread.sendMessage(message.getText());
+            }
+        });
+        this.boutonEnvoi.setSize(100, 50);
 
         // Mise en forme de la fenêtre
         this.setSize(800,700);
@@ -136,7 +132,7 @@ public class ClientChat extends JFrame {
     	
     	if(pseudo == null) System.exit(0);
     	
-    	EchoClient.setPseudo(pseudo);
+    	ClientMultiThread.setPseudo(pseudo);
 		this.setTitle(titreChat + " - Session de " + pseudo);
 		
     }

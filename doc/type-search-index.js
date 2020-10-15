@@ -1,1 +1,1 @@
-typeSearchIndex = [{"l":"All Classes","url":"allclasses-index.html"},{"p":"gui","l":"ClientChat"},{"p":"stream","l":"ClientThread"},{"p":"stream","l":"EchoClient"},{"p":"stream","l":"EchoServer"},{"p":"stream","l":"EchoServerMultiThreaded"}]
+typeSearchIndex = [{"l":"All Classes","url":"allclasses-index.html"},{"p":"stream","l":"ClientMultiCast"},{"p":"stream","l":"ClientMultiThread"},{"p":"gui","l":"ClientMultiThreadChat"},{"p":"gui","l":"ClientMutiCastChat"},{"p":"stream","l":"ServerClientThread"},{"p":"stream","l":"ServerMultiThreaded"}]

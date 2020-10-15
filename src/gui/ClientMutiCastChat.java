@@ -12,22 +12,37 @@ import javax.swing.text.StyleContext;
 import stream.ClientMultiCast;
 
 /**
- * 
- * @author Nel Bouvier & Carmen Prévot
+ * The Client Chat interface.
+ * @author Nel Bouvier et Carmen Prévot
  * @version 1.0
  */
 
+@SuppressWarnings("serial")
 public class ClientMutiCastChat extends JFrame {
 	
+	/**
+	 * The title of the chat window
+	 */
     private String titreChat = "Programmation Réseaux - Chat";
 
+    /**
+     * The output of the chat, including all the message on this chat channel.
+     */
     private JTextPane output = new JTextPane();
+    
+    /**
+     * The text input field, where the client writes his new message.
+     */
     private JTextField message = new JTextField();
+    
+    /**
+     * The submit button.
+     */
     private JButton boutonEnvoi = new JButton("Envoyer");
 
     
     /**
-     * 
+     * Creates a new instance of ClientChat.
      * 
      */
     public ClientMutiCastChat() {
@@ -37,6 +52,7 @@ public class ClientMutiCastChat extends JFrame {
     }
 
     /**
+     * Initializes the chat interface.
      * 
      */
     public void initialisation() {
@@ -63,38 +79,38 @@ public class ClientMutiCastChat extends JFrame {
         gbl_zoneEcriture.rowWeights = new double[]{0.0, 0.0, 0.0};
         zoneEcriture.setLayout(gbl_zoneEcriture);
         panel.add(zoneEcriture);
-                GridBagConstraints gbc_message = new GridBagConstraints();
-                gbc_message.gridheight = 2;
-                gbc_message.fill = GridBagConstraints.BOTH;
-                gbc_message.insets = new Insets(0, 0, 0, 5);
-                gbc_message.gridx = 1;
-                gbc_message.gridy = 1;
-                zoneEcriture.add(this.message, gbc_message);
+        GridBagConstraints gbc_message = new GridBagConstraints();
+        gbc_message.gridheight = 2;
+        gbc_message.fill = GridBagConstraints.BOTH;
+        gbc_message.insets = new Insets(0, 0, 0, 5);
+        gbc_message.gridx = 1;
+        gbc_message.gridy = 1;
+        zoneEcriture.add(this.message, gbc_message);
+        
+        // Appui sur entrée
+        this.message.addKeyListener(new KeyAdapter() {
+        	public void keyReleased(KeyEvent event) {
+        		if (event.getKeyChar() == '\n')
+                	ClientMultiCast.sendMessage(message.getText());
+        	}
+        });
+        this.message.requestFocus();
+        this.message.setSize(500, 150);
+        this.message.setMargin(new Insets(10,10,10,10));
+        GridBagConstraints gbc_boutonEnvoi = new GridBagConstraints();
+        gbc_boutonEnvoi.fill = GridBagConstraints.HORIZONTAL;
+        gbc_boutonEnvoi.insets = new Insets(0, 0, 5, 5);
+        gbc_boutonEnvoi.gridx = 3;
+        gbc_boutonEnvoi.gridy = 1;
+        zoneEcriture.add(this.boutonEnvoi, gbc_boutonEnvoi);
                 
-                // Appui sur entrée
-                this.message.addKeyListener(new KeyAdapter() {
-                	public void keyReleased(KeyEvent event) {
-                		if (event.getKeyChar() == '\n')
-                        	ClientMultiCast.sendMessage(message.getText());
-                	}
-                });
-                this.message.requestFocus();
-                this.message.setSize(500, 150);
-                this.message.setMargin(new Insets(10,10,10,10));
-                        GridBagConstraints gbc_boutonEnvoi = new GridBagConstraints();
-                        gbc_boutonEnvoi.fill = GridBagConstraints.HORIZONTAL;
-                        gbc_boutonEnvoi.insets = new Insets(0, 0, 5, 5);
-                        gbc_boutonEnvoi.gridx = 3;
-                        gbc_boutonEnvoi.gridy = 1;
-                        zoneEcriture.add(this.boutonEnvoi, gbc_boutonEnvoi);
-                        
-                                // Gestion action d'envoi
-                                boutonEnvoi.addActionListener(new ActionListener() {
-                                    public void actionPerformed(ActionEvent e) {
-                                    	ClientMultiCast.sendMessage(message.getText());
-                                    }
-                                });
-                                this.boutonEnvoi.setSize(100, 50);
+        // Gestion action d'envoi
+        boutonEnvoi.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	ClientMultiCast.sendMessage(message.getText());
+            }
+        });
+        this.boutonEnvoi.setSize(100, 50);
 
         // Mise en forme de la fenêtre
         this.setSize(800,700);
@@ -102,10 +118,11 @@ public class ClientMutiCastChat extends JFrame {
         this.output.setMargin(new Insets(5, 5, 5, 5));
         
     }
+    
     /**
+     * Asks for client's nickname.
      * 
      */
-
     public void identificationClient() {
 
     	String pseudo;
@@ -120,6 +137,12 @@ public class ClientMutiCastChat extends JFrame {
 		
     }
 
+    /**
+     * Appends a new message to the chat pane, setting the color of the message.
+     * @param tp The chat pane.
+     * @param msg The new message to add.
+     * @param c The color of the message.
+     */
     private void appendToPane(JTextPane tp, String msg, Color c) {
         StyleContext sc = StyleContext.getDefaultStyleContext();
         AttributeSet aset = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, c);
@@ -133,10 +156,18 @@ public class ClientMutiCastChat extends JFrame {
         tp.replaceSelection(msg);
     }
 
+    /**
+     * Shows the new message on the chat interface (calling the appendToPane method).
+     * @param readLine The new message.
+     * @param color The color of this new message.
+     */
 	public void afficherNouveauMessage(String readLine, Color color) {
 		this.appendToPane(this.output, readLine + "\n", color);
 	}
 	
+	/**
+	 * Clears the chat output. Used when the client moves to another channel.
+	 */
 	public void clearChat() {
 		this.output.setText(null);
 	}

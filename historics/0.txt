@@ -3,3 +3,5 @@ normal Nel : test
 normal Dorian : Hola
 normal Nel : Salut
 normal Carmen : Bonjour Nel
+normal Carmen : Salut
+normal Carmen : Salut
