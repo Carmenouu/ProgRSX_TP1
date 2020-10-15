@@ -10,6 +10,11 @@ package stream;
 import java.io.*;
 import java.net.*;
 
+/**
+ * 
+ * @author Nel Bouvier and Carmen Prévot
+ * @version 1.0
+ */
 public class EchoServer  {
 
  	/**
@@ -31,9 +36,8 @@ public class EchoServer  {
        }
   
  	/**
-  	* main method
-	* @param EchoServer port
-  	* 
+  	* Main method.
+	* @param args The server and the port number.
   	**/
        public static void main(String args[]){ 
         ServerSocket listenSocket;
